@@ -1,2 +1,2 @@
-# smartcare-machinelearning
+# Smartcare Machine Learning
 Parte de machine learning do smartcare
