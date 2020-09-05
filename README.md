@@ -1,6 +1,6 @@
 # Smartcare Machine Learning
 ## Modelo
-![Modelo de redes neurais recorrentes utilizado](modelo/representacao/2x/model.png)
+![Modelo de redes neurais recorrentes utilizado](modelo/representacao/2x/modelo.png)
 Local onde se encontrará a parte mais técnica referente a deep learning, a construção e treinamento das redes neurais artificiais recorrentes (RNN). Confira [clicando aqui](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/modelo)
 
 ## Servidor
