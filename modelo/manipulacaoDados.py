@@ -3,7 +3,6 @@ import json
 import joblib
 from sklearn.preprocessing import MinMaxScaler
 
-n = 20 # Tamanho dataset de teste
 
 
 path = "dados/dataset.json"
@@ -33,11 +32,7 @@ df["x"] = df_treino[:, 0]
 df["y"] = df_treino[:, 1]
 df["stress"] = df_treino[:, 2]
 
-df_teste = df.iloc[:n, :]
-df.drop(df.tail(n).index, inplace=True)
 
 
 df.to_pickle("dados/dataset-treino.df")
-df_teste.to_pickle("dados/dataset-teste.df")
-
 

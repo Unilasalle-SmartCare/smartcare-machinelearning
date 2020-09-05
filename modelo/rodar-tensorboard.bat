@@ -1,0 +1,2 @@
+tensorboard --logdir=logs/
+pause
