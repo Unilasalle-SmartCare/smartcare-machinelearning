@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import TimeSeriesSplit
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
 import difflib
@@ -63,14 +63,17 @@ x, y = loopAnteriores(x, y)
 def criarModelo ():
     model = Sequential()
     model.add(TimeDistributed(Flatten(input_shape=(n, 73, 2))))
-    model.add(LSTM(units = 32, return_sequences=True))
-    model.add(Dropout(rate=0.5))
     
-    model.add(LSTM(units = 32))
-    model.add(Dropout(rate=0.5))
+    for i in range(0, 2):
+        model.add(LSTM(units = 8, return_sequences=True))
+        model.add(Dropout(rate=0.75))
     
-    model.add(Dense(units = 64, activation = 'relu'))
-    model.add(Dropout(rate=0.5))
+    model.add(LSTM(units = 8))
+    model.add(Dropout(rate=0.75))
+    
+    for j in range(0, 4):
+        model.add(Dense(units = 32, activation = 'relu', kernel_initializer='random_uniform'))
+        model.add(Dropout(rate=0.75))
 
     model.add(Dense(units = 1, activation = 'sigmoid'))
     
@@ -87,18 +90,19 @@ x_teste, y_teste = loopAnteriores(x_teste, y_teste)
 
 # Callbacks
 es = EarlyStopping(monitor='loss', min_delta = 1e-10, patience = 20, verbose=1)
-rlr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience = 10, verbose=1)
+rlr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience = 5, verbose=0)
 checkpoint = ModelCheckpoint(filepath='checkpoints/pesos.h5', monitor='loss',
                              save_best_only=True)
 
-NOME = "Smartcare-Stress-Idoso-RNN-%s"%(int(time.time()))
-tensorboard = TensorBoard(log_dir='logs/{}'.format(NOME))
+
 model = criarModelo()
-kfold = StratifiedKFold(n_splits=k, shuffle=True, random_state=seed)
+kfold = TimeSeriesSplit(n_splits=k)
 cvscores = []
 
 for treino, teste in kfold.split(x, y):
-    model.fit(x[treino], y[treino], epochs=150, batch_size=64, verbose=0)
+    NOME = "Smartcare-Stress-Idoso-RNN-%s"%(int(time.time()))
+    tensorboard = TensorBoard(log_dir='logs/{}'.format(NOME))
+    history = model.fit(x[treino], y[treino], epochs=150, batch_size=128, verbose=0, callbacks=[tensorboard, es, rlr])
     scores = model.evaluate(x[teste], y[teste], verbose=0)
     print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
     cvscores.append(scores[1] * 100)

@@ -24,7 +24,7 @@ def formataMovimentosHora(array):
 
 
 # Configuração
-tamanho_teste = 33 # Porcentagem do tamanho para teste
+tamanho_teste = 35 # Porcentagem do tamanho para teste
 path = "dados/dataset.json"
 
 
