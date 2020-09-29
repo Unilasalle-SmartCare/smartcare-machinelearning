@@ -24,7 +24,7 @@ def formataMovimentosHora(array):
 
 
 # Configuração
-tamanho_teste = 35 # Porcentagem do tamanho para teste
+tamanho_teste = 10 # Porcentagem do tamanho para teste
 path = "dados/dataset.json"
 
 
@@ -37,6 +37,12 @@ with open(path , 'r') as f:
     
 df = pd.DataFrame.from_dict(pd.json_normalize(data), orient='columns')
 df["stress"] = df["stress"].astype(int) # True e False para 1 e 0
+df_naoordenado = df
+
+groups = [df for _, df in df.groupby('date')]
+np.random.shuffle(groups)
+df = pd.concat(groups).reset_index(drop=True)
+
 
 df_treino = df.iloc[:, 0:4]
 
@@ -63,15 +69,18 @@ for i in range(0, len(x)):
 y = np.array(y).astype('int32').flatten()  
 x = np.array(x).astype('float32')
 
-qtdGruposTeste = round(x.shape[0]*tamanho_teste)
-x_teste = x[-qtdGruposTeste:][:][:]
-x = x[:-qtdGruposTeste]
-
-y_teste = y[-qtdGruposTeste:]
-y = y[:-qtdGruposTeste]
+if(tamanho_teste):
+    qtdGruposTeste = round(x.shape[0]*tamanho_teste)
+    
+    x_teste = x[-qtdGruposTeste:][:][:]
+    x = x[:-qtdGruposTeste]
+    
+    y_teste = y[-qtdGruposTeste:]
+    y = y[:-qtdGruposTeste]
+    
+    np.save("dados/x_teste.npy", x_teste)
+    np.save("dados/y_teste.npy", y_teste)
 
 np.save("dados/x_treino.npy", x)
 np.save("dados/y_treino.npy", y)
 
-np.save("dados/x_teste.npy", x_teste)
-np.save("dados/y_teste.npy", y_teste)
