@@ -28,7 +28,7 @@ def divide_colunas(a, b):
     return a / b if b else 0
 
 # Configuração
-tamanho_teste = 5 # Porcentagem do tamanho para teste
+tamanho_teste = 0 # Porcentagem do tamanho para teste
 path = "dados/dataset.json" # Caminho do dataset vindo do gerador
 
 tamanho_teste /= 100

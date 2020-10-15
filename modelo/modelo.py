@@ -3,43 +3,14 @@ from keras.layers import Dense, Dropout
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import SGD
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.model_selection import StratifiedKFold
+from sklearn.utils import shuffle
 import difflib
 import time
+from contextlib import redirect_stdout
+from modulos.analise_dados import kfold_log_batches, plotarComparacoes, plotar, plotar_log, plotar_matriz_confusao
+from modulos.machine_learning import carrega_dados, kfold
 
-# Configurações
-k = 10 # Número de folds no K-fold Validation
-##
-
-# Dados de treino
-x = np.load("dados/x_treino.npy")
-y = np.load("dados/y_treino.npy")
-##
-
-# Função que plota um gráfico comparativo entre as classes reais e previstas
-def plotarComparacoes(model, x_teste, y_teste, estatisticas=1):
-    previsao = model.predict(x_teste)
-    previsao = np.array([previsao > 0.5]).astype('int32')
-    previsao = previsao.reshape(previsao.shape[1])
-    
-    if estatisticas:
-        sm = difflib.SequenceMatcher(None,previsao, y_teste)
-        print("\nEstatísticas")
-        print("\tMédia das previsões: %.2f"%(previsao.mean()))
-        print("\tMédia real: %.2f"%(y_teste.mean()))
-        print("\tDesvio Padrão das previsões: %.2f"%(previsao.std()))
-        print("\tDesvio Padrão: %.2f"%(y_teste.std()))
-        print("\tPorcentagem de similaridade: %.2f %%"%(sm.ratio()*100))
-    
-    plt.plot(previsao, color = 'blue', label = 'Previsão', alpha=0.5)
-    plt.plot(y_teste, color = 'red', label = 'Real', alpha=0.5)
-    plt.title('Previsão de stress de idoso com base na movimentação')
-    plt.xlabel('Intervalo de tempo')
-    plt.ylabel('Stress')
-    plt.legend()
-    plt.show()
-
+x, y, x_teste, y_teste = carrega_dados()
 
 def criarModelo ():
     model = Sequential()
@@ -49,16 +20,13 @@ def criarModelo ():
     model.add(Dense(units = 128, activation = 'relu'))
 
     model.add(Dense(units = 1, activation = 'sigmoid'))
-    otimizador = SGD(momentum=0.9, learning_rate=0.005)
+    otimizador = SGD(momentum=0.9, nesterov=True, learning_rate=0.0005)
     model.compile(optimizer = otimizador, loss = 'binary_crossentropy',
                       metrics = ['accuracy'])
     return model
 
 
-# Dataset teste
-x_teste = np.load("dados/x_teste.npy")
-y_teste = np.load("dados/y_teste.npy")
-##
+
 
 # Callbacks
 es = EarlyStopping(monitor='val_loss', min_delta = 1e-10, patience = 20, verbose=1)
@@ -66,42 +34,27 @@ rlr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience = 3, verbose=0)
 checkpoint = ModelCheckpoint(filepath='checkpoints/pesos.h5', monitor='loss',
                              save_best_only=True)
 ##
-
-
 model = criarModelo()
-kfold = StratifiedKFold(n_splits=k, shuffle=False)
-cvscores = []
 
-# K-fold
-for treino, teste in kfold.split(x, y):
-    history = model.fit(x[treino], y[treino], epochs=550, batch_size=20, verbose=0)
-    scores = model.evaluate(x[teste], y[teste], verbose=0)
-    print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100)) # Resultado do Fold
-    cvscores.append(scores[1] * 100)
-print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores))) # Resultado Final
-##
+for i in range(5):
+    kfold(x, y, model)
+
+batches = [50, 100]
+h = kfold_log_batches(criarModelo, x, y, batches=batches)
+plotar_log(h, batches)
 
 # Treino Normal (Sem Kfold)
+model = criarModelo()
 NOME = "Smartcare-Stress-Idoso-ANN-%s"%(int(time.time()))
-tensorboard = TensorBoard(log_dir='logs/{}'.format(NOME))
-h = model.fit(x,y, validation_split=0.2, epochs=500, batch_size=20)
+tensorboard = TensorBoard(log_dir='logs/tensorboard/{}'.format(NOME))
+h = model.fit(x,y, epochs=500, batch_size=100, verbose=0)
 ##
 
+plotar(h)
+plotar_matriz_confusao(model, x_teste, y_teste)
+
 # Gráfico Treino Normal
-plt.plot(h.history['accuracy'])
-plt.plot(h.history['val_accuracy'])
-plt.title('AcurÃ¡cia do modelo')
-plt.ylabel('acurÃ¡cia')
-plt.xlabel('Ã©poca')
-plt.legend(['Treino', 'Teste'], loc='best')
-plt.show()  
-plt.plot(h.history['loss'])
-plt.plot(h.history['val_loss'])
-plt.title('Perda do modelo')
-plt.ylabel('perda')
-plt.xlabel('Ã©poca')
-plt.legend(['train', 'test'], loc='best')
-plt.show()
+
 ##
 
 # Plot comparação dataset teste previsão
