@@ -69,10 +69,12 @@ def plotarComparacoes(model, x_teste, y_teste, estatisticas=1):
     plt.plot(previsao, color = 'blue', label = 'Previsão', alpha=0.5)
     plt.plot(y_teste, color = 'red', label = 'Real', alpha=0.5)
     plt.title('Previsão de stress de idoso com base na movimentação')
-    plt.xlabel('Intervalo de tempo')
+    plt.xlabel('Hora de Teste')
     plt.ylabel('Stress')
     plt.legend()
+    plt_comparacoes = plt.gcf()
     plt.show()
+    return plt_comparacoes
     
 def plotar(h):
     if not isinstance(h, list):
@@ -148,9 +150,26 @@ def plotar_log(lista, tags, nfolds=10):
 def matriz_confusao(y_teste, y_previsto):
      cm = confusion_matrix(y_teste, y_previsto)  
      plot_confusion_matrix(cm, class_names=["Estressado", "Não Estressado"])
+     plt_matriz_confusao = plt.gcf()
      plt.show()
+     return plt_matriz_confusao
+     
 def plotar_matriz_confusao(model, x_teste, y_teste):
     y_pred = rint(array(model.predict(x_teste)))
-    matriz_confusao(y_teste, y_pred)
+    return matriz_confusao(y_teste, y_pred)
     
+def log_previsoes(model, x_teste, y_teste):
+    log_path = "logs/previsoes/previsao-%d"%(int(time()))
+    os.mkdir(log_path)
+    matriz = plotar_matriz_confusao(model, x_teste, y_teste)
+    comparacoes = plotarComparacoes(model, x_teste, y_teste, estatisticas=0)
+    
+    matriz.savefig("%s/matriz_confusao.png"%(log_path))
+    comparacoes.savefig("%s/grafico_comparacoes.png"%(log_path))
+    
+    f = open("%s/model.log"%(log_path), "a")
+    with redirect_stdout(f):
+        model.summary()
+    f.write('\n'+str(model.optimizer.get_config()))
+    f.close()        
     
