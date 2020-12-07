@@ -1,11 +1,9 @@
 # Smartcare Machine Learning
-## Modelo
-Local onde se encontrará a parte mais técnica referente a deep learning, a construção e treinamento das redes neurais artificiais recorrentes (RNN). Confira [clicando aqui](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/modelo)
+## Model
+Where the technical part of the deep learning is, the build and train of the convolutional neural network (CNN). Check it out by [clicking here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/modelo)
 
-## Servidor
-Local onde são carregadas as informações do modelo já treinado, será como uma api que ao receber requisições com dados novos retornará a previsão se o idoso está estressado ou estará estressado. Confira [clicando aqui](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/server)
+## Server
+It is planned in the future to have an api server with the model running (Flask). Check it out by [clicking here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/server)
 
-## Lançamentos
-Visando uma maior facilidade em juntar as features e fixes desenvolvidas no projeto, você pode ver os lançamentos (releases)  [clicando aqui](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/releases).
-
-
+## Releases
+In order to make it easier to join the features and fixes developed in the project, it was grouped with releases, you can see them by [clicking here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/releases).
