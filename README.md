@@ -1,6 +1,9 @@
 # Smartcare Machine Learning
 It is proposed a way to detect wandering activities on alzheimer patients by their movimentation, collected in a non intrusive way.
 
+## Dataset
+Generated data on the paper can be found [here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/blob/master/modelo/dados/dataset.json)
+
 ## Model
 Where the technical part of the deep learning is, the build and train of the convolutional neural network (CNN). Check it out by [clicking here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/modelo)
 
