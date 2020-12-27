@@ -2,7 +2,7 @@
 It is proposed a way to detect wandering activities on alzheimer patients by their movimentation, collected in a non intrusive way.
 
 ## Dataset
-Generated data on the paper can be found [here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/blob/master/modelo/dados/dataset.json)
+Generated data on the paper can be found [here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/blob/master/modelo/dados/dataset.json).
 The source-code of the generator [here](https://github.com/Unilasalle-SmartCare/smartcare-datagenerator)
 
 ## Model
