@@ -3,6 +3,7 @@ It is proposed a way to detect wandering activities on alzheimer patients by the
 
 ## Dataset
 Generated data on the paper can be found [here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/blob/master/modelo/dados/dataset.json)
+The source-code of the generator [here](https://github.com/Unilasalle-SmartCare/smartcare-datagenerator)
 
 ## Model
 Where the technical part of the deep learning is, the build and train of the convolutional neural network (CNN). Check it out by [clicking here](https://github.com/Unilasalle-SmartCare/smartcare-machinelearning/tree/master/modelo)
