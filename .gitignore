@@ -1,2 +1,7 @@
 logs/
 modelo/modelo.old.py
+package/smartcare.egg-info/
+package/build/
+package/dist/
+package/.eggs/
+server/env/
