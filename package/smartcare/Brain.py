@@ -25,3 +25,8 @@ class Brain:
         }
         prediction = [prediction > 0.5]
         return result[prediction[0][0][0]]
+
+    def predict_profiler(self, image):
+        tf.profiler.experimental.start(self.config.get("LOGS_FOLDER"))
+        self.model.predict(image)
+        tf.profiler.experimental.stop()

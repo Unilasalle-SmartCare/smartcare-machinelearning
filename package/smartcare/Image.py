@@ -43,7 +43,6 @@ class Image:
         image = self.resize(image)
         image = self.normalize(image)
         image = image[np.newaxis, ..., np.newaxis]
-        print(image.shape)
         self.image = image
         return image
 
