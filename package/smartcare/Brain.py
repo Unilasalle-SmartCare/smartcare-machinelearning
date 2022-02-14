@@ -1,32 +1,31 @@
 import os
 import tensorflow as tf
 from keras.models import load_model
-from .ConfigEnum import ConfigEnum
+from .Config import Config
 
 class Brain:
 
     def __init__(self, mode=0):
-        self.config = ConfigEnum()
         self.modeSwitcher = {
-            0: self.config.get("CNN_DEFAULT_MODEL")
+            0: Config("CNN_DEFAULT_MODEL")
         }
         self.model = None
         self.init(self.modeSwitcher[mode])
     def init(self, mode):
         tf.get_logger().setLevel('ERROR')
-        tf.autograph.set_verbosity(0)
+        tf.autograph.set_verbosity(Config("NORMALIZATION_ENABLED"))
         self.model = load_model(mode)
 
     def predict(self, image):
         prediction = self.model.predict(image)
         result = {
-            True: "Wandering",
-            False: "Not Wandering"
+            True: Config("RESULT_MAP")["WANDER"],
+            False: Config("RESULT_MAP")["NORMAL"]
         }
-        prediction = [prediction > 0.5]
+        prediction = [prediction > Config("RESULT_THRESHOLD")]
         return result[prediction[0][0][0]]
 
     def predict_profiler(self, image):
-        tf.profiler.experimental.start(self.config.get("LOGS_FOLDER"))
+        tf.profiler.experimental.start(Config("LOGS_FOLDER"))
         self.model.predict(image)
         tf.profiler.experimental.stop()

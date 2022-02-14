@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import codecs
 import os
 
-VERSION = '0.0.21'
+VERSION = '1.0.2'
 DESCRIPTION = 'Elderly wandering prediction AI'
 LONG_DESCRIPTION = 'Originally from the paper ''Convolutional Neural Network for Elderly Wandering Prediction in indoor scenarios.'' An AI to detect elderly wandering by movementation in indoor scenarios.'
 
